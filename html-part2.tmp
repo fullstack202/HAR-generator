@@ -1,0 +1,18 @@
+'))} catch (e) {
+        return console.error(e)
+    }
+    harContent.log.entries.forEach(entry => {
+        if (!entry.timings._blocked_queueing) entry.timings._blocked_queueing = 0
+        entry.timings.receive = Math.max(entry.timings.receive - entry.timings._blocked_queueing, 0)
+        let sub = entry.timings._blocked_queueing + Math.min(Math.max(entry.timings.ssl || 0, 0), Math.max(entry.timings.connect || 0, 0))
+        entry.time = Object.values(entry.timings)
+            .reduce((a, b) => a + Math.max(b, 0), 0) - sub
+    })
+    window.startTime = new Date(harContent.log.entries[0].startedDateTime).getTime()
+    const harEl = $('#har')
+    harEl.HarView()
+    harEl.data('HarView').render(harContent)
+})
+</script>
+</body>
+</html>
